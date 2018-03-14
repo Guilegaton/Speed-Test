@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Speed_Test.Models.CheckUrl>
+
+@{
+    ViewBag.Title = "History";
+    var options = new AjaxOptions()
+    {
+        UpdateTargetId = "tabledata",
+        Url = Url.Action("JsonGetUrls"),
+        LoadingElementId = "loadingIndicator",
+        OnSuccess = "ParseResponse",
+    };
+}
+
+<h2>History</h2>
+
+@using (Ajax.BeginForm(options))
+{
+    <div>
+        <input type="text" name="url" style="margin-top: 10px" placeholder="Search by host name" />
+        <input type="submit" value="search" />
+    </div>
+        <div id="loadingIndicator" style="display:none;">Loading...</div>
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Host)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Url)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MinTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MaxTime)
+                </th>
+            </tr>
+            <tbody id="updateTarget">
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Host)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Url)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MinTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MaxTime)
+        </td>
+    </tr>
+}</tbody>
+        </table>
+}
+
+
+            
+
+
+
+@section scripts
+{
+
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+        function ParseResponse(data) {
+            if (data != null) {
+                var target = $("#updateTarget");
+                target.empty();
+                for (var i = 0; i < data.length; i++) {
+                    target.append("<tr><td>" + data[i].Host + "</td>" +
+                                  "<td>" + data[i].Url + "</td>" +
+                                  "<td>" + data[i].MinTime + "</td>" +
+                                  "<td>" + data[i].MaxTime + "</td></tr>");
+                    }
+                }
+            }
+
+    </script>
+}
